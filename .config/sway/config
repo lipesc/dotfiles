@@ -3,9 +3,7 @@
 # Copy this to ~/.config/sway/config and edit it to your liking.
 #
 # Read `man 5 sway` for a complete reference.
-
-
-
+exec --no-startup-id gnome-keyring-daemon --start --components=pkcs11,secrets,ssh
 
 #for_window [app_id="chromium"] border none
 default_border none
