@@ -1,0 +1,120 @@
+* {
+  "layer": "top",
+  "position": "top",
+  "height": 28,
+  "modules-left": ["sway/workspaces", "sway/mode"],
+  "modules-center": ["clock"],
+  "modules-right": [
+    "cpu",
+    "memory",
+    "disk",
+    "temperature",
+    "network",
+    "battery",
+    "pulseaudio",
+    "idle_inhibitor",
+    "power-profiles-daemon",
+    "tray",
+    "mpd",
+    "custom/keyboard-state",
+    "custom/language"
+  ],
+
+  "clock": {
+    "format": " {:%H:%M | %d/%m}",
+    "tooltip-format": "{:%A, %d de %B de %Y}",
+    "interval": 60
+  },
+
+  "cpu": {
+    "format": " {usage}%",
+    "interval": 5
+  },
+
+  "memory": {
+    "format": " {used:0.1f}G",
+    "interval": 5
+  },
+
+  "disk": {
+    "format": " {free}",
+    "path": "/"
+  },
+
+  "temperature": {
+    "format": " {temperatureC}°C",
+    "critical-threshold": 75
+  },
+
+  "network": {
+    "format-wifi": " {essid} ({signalStrength}%)",
+    "format-ethernet": " {ifname}",
+    "format-disconnected": " Sem conexão",
+    "tooltip-format": "{ifname} via {ipaddr}"
+  },
+
+  "battery": {
+    "format": "{icon} {capacity}%",
+    "format-charging": " {capacity}%",
+    "format-icons": ["", "", "", "", ""],
+    "interval": 30
+  },
+
+  "pulseaudio": {
+    "format": "{icon} {volume}%",
+    "format-muted": " Mutado",
+    "format-icons": {
+      "default": ["", "", ""]
+    }
+  },
+
+  "idle_inhibitor": {
+    "format": "{icon}",
+    "format-icons": {
+      "activated": "",
+      "deactivated": ""
+    }
+  },
+
+  "power-profiles-daemon": {
+    "format": " {profile}"
+  },
+
+  "tray": {
+    "icon-size": 16,
+    "spacing": 10
+  },
+
+  "mpd": {
+    "format": "{stateIcon} {artist} - {title}",
+    "format-stopped": "",
+    "format-disconnected": " MPD",
+    "state-icons": {
+      "playing": "",
+      "paused": ""
+    }
+  },
+
+  "custom/keyboard-state": {
+    "exec": "bash -c 'if [ $(xset q | grep Caps | awk \"{print \\$4}\") = \"on\" ]; then echo \"CAPS\"; else echo \"\"; fi'",
+    "interval": 2,
+    "format": "⌨️ {output}",
+    "tooltip": false
+  },
+
+  "custom/language": {
+    "exec": "setxkbmap -query | awk '/layout/ {print toupper($2)}'",
+    "interval": 5,
+    "format": " {output}"
+  },
+
+  "sway/mode": {
+    "format": "<span style=\"italic\">{}</span>"
+  },
+
+  "sway/workspaces": {
+    "disable-scroll": true,
+    "all-outputs": true
+  }
+}
+
