@@ -28,7 +28,7 @@ plugins=(mise)
 export EDITOR="vim"
 export SUDO_EDITOR="$EDITOR"
 alias s="source ~/.zshrc"
- 
+alias video=" mpv --gpu-api=opengl"
 # ✅ Ativar mise corretamente
 eval "$(mise activate zsh --shims)"
 
@@ -53,11 +53,14 @@ export GDK_BACKEND=wayland
 
 #Qt (should use wayland by default)
 #export QT_QPA_PLATFORM=xcb
-export QT_WAYLAND_DISABLE_WINDOWDECORATION=1
+#export QT_WAYLAND_DISABLE_WINDOWDECORATION=1
+export LIBVA_DRIVER_NAME=nvidia
 
 
 export QT_QPA_PLATFORMTHEME="qt6ct"
-
+export GTK_THEME=Adwaita:dark
+export GTK2_RC_FILES=/usr/share/themes/Adwaita-dark/gtk-2.0/gtkrc
+export QT_STYLE_OVERRIDE=Adwaita-Dark
 gsettings set org.gnome.desktop.interface gtk-theme Adwaita-dark
 
 alias config='/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
