@@ -48,7 +48,7 @@ alias waybarcfg='nvim ~/.config/waybar/config'
 alias swayreload='swaymsg reload'
 #GTK
 #GTK
-export GDK_BACKEND=wayland
+#export GDK_BACKEND=wayland
 #export CLUTTER_BACKEND=wayland
 
 #Qt (should use wayland by default)
