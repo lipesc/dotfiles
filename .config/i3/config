@@ -9,12 +9,9 @@
 
 # Autostart (programas que iniciam com o i3)
 exec --no-startup-id gnome-keyring-daemon --start --components=pkcs11,secrets,ssh
-exec --no-startup-id polybar main
-exec --no-startup-id nm-applet
-exec --no-startup-id blueman-applet
-exec --no-startup-id copyq --start-server
-exec --no-startup-id volumeicon # Mantido para controle de volume no tray
+exec --no-startup-id ~/.config/polybar/launch.sh
 
+exec --no-startup-id nitrogen --restore
 # Mod key (Super/Win)
 set $mod Mod4
 
@@ -26,15 +23,14 @@ set $menu dmenu_recency
 font pango:monospace 10
 
 # Cores da janela focada (do seu sway config)
-# client.focused <border> <background> <text> <indicator> <child_border>
-client.focused          #000000 #000000 #ffffff #000000 #000000
+# client.focused <border> <background> <text> <indicator> <child_border> client.focused
 
 # Remove as bordas das janelas
 for_window [class="^.*"] border pixel 0
-bindsym $mod+Shift+b exec --no-startup-id ~/.config/polybar/launch.sh
 # --- Atalhos de Tecla (Keybindings) ---
 
 # Iniciar terminal
+bindsym $mod+Shift+b exec --no-startup-id ~/.config/polybar/launch.sh
 bindsym $mod+Return exec $term
 
 # Matar janela focada
@@ -89,7 +85,7 @@ bindsym $mod+v split v
 bindsym $mod+s layout stacking
 # CORRIGIDO: Removidos espaços extras
 bindsym $mod+w layout tabbed
-bindsym $mod+e layout toggle split # Alterna entre split h/v
+bindsym $mod+e layout toggle split
 
 # Tela cheia (fullscreen)
 bindsym $mod+f fullscreen toggle
