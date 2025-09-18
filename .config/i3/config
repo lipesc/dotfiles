@@ -10,7 +10,6 @@
 # Autostart (programas que iniciam com o i3)
 exec --no-startup-id gnome-keyring-daemon --start --components=pkcs11,secrets,ssh
 exec --no-startup-id ~/.config/polybar/launch.sh
-
 exec --no-startup-id nitrogen --restore
 # Mod key (Super/Win)
 set $mod Mod4

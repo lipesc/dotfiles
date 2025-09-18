@@ -1,0 +1,32 @@
+[global]
+font = JetBrainsMono Nerd Font 10
+format = "<b>%s</b>\n%b"  ; Mostra resumo e corpo da notificação
+alignment = left
+vertical_alignment = center
+offset = 10x50
+width = 300
+height = 100
+padding = 8
+horizontal_padding = 8
+corner_radius = 10
+frame_width = 2
+frame_color = "#ffffff"
+background = "#000000cc"
+foreground = "#ffffff"
+timeout = 5  ; Notificações ficam visíveis por 5 segundos
+history_length = 20  ; Mantém até 20 notificações no histórico
+
+[urgency_low]
+timeout = 5
+background = "#000000cc"
+foreground = "#ffffff"
+
+[urgency_normal]
+timeout = 5
+background = "#000000cc"
+foreground = "#ffffff"
+
+[urgency_critical]
+timeout = 0  ; Notificações críticas não expiram
+background = "#ff0000cc"
+foreground = "#ffffff"
