@@ -31,7 +31,7 @@ client.focused          #000000 #000000 #ffffff #000000 #000000
 
 # Remove as bordas das janelas
 for_window [class="^.*"] border pixel 0
-
+bindsym $mod+Shift+b exec --no-startup-id ~/.config/polybar/launch.sh
 # --- Atalhos de Tecla (Keybindings) ---
 
 # Iniciar terminal
@@ -60,12 +60,14 @@ bindsym $mod+Shift+$up move up
 bindsym $mod+Shift+$right move right
 
 # Orientação do split (h para horizontal, v para vertical)
-bindsym $mod+h split h
+# CORRIGIDO: Movido de 'h' para 'b' para evitar conflito com 'focus left'
+bindsym $mod+b split h
 bindsym $mod+v split v
 
 # Layouts (como no sway)
-bindsym $mod+s layout stacking  # Stacking
-bindsym $mod+w layout tabbed    # Tabbed
+bindsym $mod+s layout stacking
+# CORRIGIDO: Removidos espaços extras
+bindsym $mod+w layout tabbed
 bindsym $mod+e layout toggle split # Alterna entre split h/v
 
 # Tela cheia (fullscreen)
@@ -140,11 +142,10 @@ bindsym $mod+Shift+c reload
 bindsym $mod+Shift+r restart
 
 # Sair do i3 (logout)
-bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'Você quer sair do i3?' -B 'Sim, sair' 'i3-msg exit'"
+bindsym $mod+Shift+e exec "i-nagbar -t warning -m 'Você quer sair do i3?' -B 'Sim, sair' 'i3-msg exit'"
 
 # Abrir menu do CopyQ
 bindsym $mod+Shift+v exec --no-startup-id copyq menu
 
-# Janelas específicas
-for_window [class="Pavucontrol"] floating enable
+
 
