@@ -335,48 +335,28 @@
   :config
   (add-hook 'java-mode-hook #'lsp))
 
+;; 1. Configura o auto-virtualenv para gerenciar os ambientes
+(use-package auto-virtualenv
+  :ensure t
+  :config
+  ;; Habilita o recarregamento automático do LSP quando o venv muda (essencial!)
+  (setq auto-virtualenv-reload-lsp t)
+  ;; Ativa o pacote
+  (auto-virtualenv-setup))
+
+;; 2. Configura o lsp-pyright para iniciar no modo Python
 (use-package lsp-pyright
   :ensure t
-  :hook (python-mode . (lambda ()
-                         (require 'lsp-pyright)
-                         (lsp-deferred))))
-(require 'dap-java)
+  :hook (python-mode . lsp-deferred))
 
-(defun my/dap-debug-java-main (main-class)
-  "Rodar uma classe Java com método main usando dap-mode."
-  (interactive "sNome da classe principal (ex: Hello): ")
-  (dap-debug
-   (list :type "java"
-         :request "launch"
-         :name (format "Java :: %s" main-class)
-         :mainClass main-class
-         :projectName nil))) ;; se tiver projeto Maven/Gradle, pode colocar o nome aqui
+;;java dap
+(require 'dap-java)
 
 ;; dap node
 (require 'dap-node)
-(defun my/dap-debug-node (file)
-  "Rodar qualquer arquivo JS/TS com dap-mode (Node.js)."
-  (interactive "fArquivo JS/TS: ")
-  (dap-debug
-   (list :type "node"
-         :request "launch"
-         :name (format "Node :: %s" (file-name-nondirectory file))
-         :program (expand-file-name file)
-         :cwd (file-name-directory (expand-file-name file))
-         :runtimeExecutable "node")))
 
 ;; dap python
 (require 'dap-python)
-
-(defun my/dap-debug-python-file (file)
-  "Rodar qualquer arquivo Python com dap-mode."
-  (interactive "fArquivo Python: ")
-  (dap-debug
-   (list :type "python"
-         :request "launch"
-         :name (format "Python :: %s" (file-name-nondirectory file))
-         :program (expand-file-name file)
-         :cwd (file-name-directory (expand-file-name file)))))
 
 ;;; company exibir sugestões textos já digitados
 (use-package company
