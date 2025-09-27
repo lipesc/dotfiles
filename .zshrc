@@ -1,4 +1,8 @@
-
+# 🖼️ Carrega prompt Powerlevel10k
+[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+export QT_STYLE_OVERRIDE=Adwaita-Dark
+export LSP_USE_PLISTS=true
+export PATH="$HOME/.cargo/bin:$PATH"
 
 
 # ⚡ Powerlevel10k InstantInstant Prompt# ⚡ Powerlevel10k Instant Prompt
@@ -11,6 +15,7 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
 fi
 
 # 🧩 Manjaro config (ok deixar) 
+
 # 🧩 Manjaro config (ok deixar) 
 
 
@@ -64,6 +69,5 @@ export QT_STYLE_OVERRIDE=Adwaita-Dark
 gsettings set org.gnome.desktop.interface gtk-theme Adwaita-dark
 
 alias config='/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
-# 🖼️ Carrega prompt Powerlevel10k
-[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+
 

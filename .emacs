@@ -6,6 +6,7 @@
 
 (add-to-list 'load-path "~/.emacs.d/lisp/")
 (setq compilation-ask-about-save nil)
+(setenv "LSP_USE_PLISTS" "true")
 
 (load-theme 'wombat t)
 
@@ -70,6 +71,7 @@
   (gcmh-idle-delay 5)
   (gcmh-high-cons-threshold (* 100 1024 1024)))
 
+
 ;; Melhorias na interface
 
 (menu-bar-mode -1)           ;; Desativar a barra de menu
@@ -78,6 +80,7 @@
 (global-display-line-numbers-mode 1)
 
 ;; Desativar a tela inicial e a mensagem do scratch
+
 
 (setq inhibit-startup-screen t
       inhibit-startup-message t
@@ -89,6 +92,7 @@
   :config
   ;; suas configurações para smex, se houver
   )
+
 
 ;;; atalhos
 
@@ -121,7 +125,7 @@
   :ensure t)
            
 (global-set-key (kbd "C->") 'mc/mark-next-like-this)
-(global-set-key (kbd "C-d") 'mc/mark-previous-like-this)
+(global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
 (global-set-key (kbd "C-c C->") 'mc/mark-all-like-this)
 (global-set-key (kbd "C-j") 'er/expand-region)
 (global-set-key (kbd "C-c C-<") 'mc/edit-lines)
@@ -182,66 +186,6 @@
 
 
 ;;;  Pacotes principais
-
-;;Java
-
-(defun my/java-spring-shell ()
-  "Abre um shell na raiz do projeto com pom.xml."
-  (interactive)
-  (let ((default-directory (locate-dominating-file default-directory "pom.xml")))
-    (shell)))
-(global-set-key (kbd "C-c C-s") #'fsc/java-spring-shell)
-
-
-
-;;; java config
-(use-package eglot-java
-  :ensure t
-  :hook (java-mode . eglot-java-mode))
-
-(use-package eglot
-  :config
-  (setq eglot-report-progress nil)
-
-  ;; Ativa suporte para jdt:// e descompilação de .class
-  (defun my/eglot-java-init-options ()
-    (when (derived-mode-p 'java-mode)
-      (list :extendedClientCapabilities
-            (list :classFileContentsSupport t))))
-
-  (add-hook 'eglot-managed-mode-hook
-            (lambda ()
-              (when (derived-mode-p 'java-mode)
-                (setq-local eglot-workspace-configuration
-                            `(:java
-                              (:extendedClientCapabilities
-                               (:classFileContentsSupport t)))))))
-
-  (defun my/eglot-jdt-file-name-handler (operation &rest args)
-    "Support Eclipse jdtls `jdt://' uri scheme."
-    (let* ((uri (car args))
-           (cache-dir "/tmp/.eglot")
-           (source-file
-            (expand-file-name
-             (file-name-concat
-              cache-dir
-              (save-match-data
-                (when (string-match "jdt://contents/\\(.*?\\)/\\(.*\\)\.class\\?" uri)
-                  (format "%s.java" (replace-regexp-in-string "/" "." (match-string 2 uri) t t))))))))
-      (unless (file-readable-p source-file)
-        (let ((content (jsonrpc-request (eglot-current-server)
-                                        :java/classFileContents (list :uri uri)))
-              (metadata-file (format "%s.%s.metadata"
-                                     (file-name-directory source-file)
-                                     (file-name-base source-file))))
-          (unless (file-directory-p cache-dir) (make-directory cache-dir t))
-          (with-temp-file source-file (insert content))
-          (with-temp-file metadata-file (insert uri))))
-      source-file))
-
-  (add-to-list 'file-name-handler-alist '("\\`jdt://" . my/eglot-jdt-file-name-handler)))
-
-
 ;; Give a pulse light when switching windows, or switching focus to
 ;; the minibuffer.
 (use-package pulse
@@ -258,10 +202,12 @@
 (use-package scala-mode
   :mode "\\.s\\(cala\\|bt\\)$")
 
-  (substitute-key-definition
-   'minibuffer-complete-word
-   'self-insert-command
-   minibuffer-local-completion-map)
+
+(substitute-key-definition
+ 'minibuffer-complete-word
+ 'self-insert-command
+ minibuffer-local-completion-map)
+
 
 ;; Enable nice rendering of diagnostics like compile errors.
 (use-package flycheck
@@ -292,19 +238,11 @@
 (setq-default indent-tabs-mode t)
 
 ;; desliga indentação automática ao apertar RET
-(when (boundp 'electric-indent-mode)
-  (electric-indent-mode 1))
+;;(when (boundp 'electric-indent-mode)
+;;  (electric-indent-mode 1))
 
 ;; TAB só indenta quando você pedir
-(global-set-key (kbd "TAB") #'indent-for-tab-command)
-
-
-(add-hook 'python-mode-hook
-          #'(lambda ()
-              (setq autopair-handle-action-fns
-                    (list #'autopair-default-handle-action
-                          #'autopair-python-triple-quote-action))))
-
+;;(global-set-key (kbd "TAB") #'indent-for-tab-command)
 
 
 ;; Whitespace Mode Tweaks
@@ -342,12 +280,115 @@
 (global-set-key (kbd "C-c m s") 'magit-status)
 (global-set-key (kbd "C-c m l") 'magit-log)
 
+;; emacs-lsp-booster
+(defun lsp-booster--advice (orig-fn &rest args)
+  "Advice to boost lsp-mode performance."
+  (let* ((server-id (or (car (plist-get (plist-get args :plist) :server-id)
+                        (car args))))
+         (proc (apply orig-fn args)))
+    (when (and (not (file-remote-p default-directory))
+               (memq server-id '(pylsp rust-analyzer))) ; Adicione outros servidores aqui
+      (let ((command (process-command proc)))
+        (set-process-command
+         proc (append (list "emacs-lsp-booster" "--") command))))
+    proc))
+
+(advice-add 'lsp--make-process :around #'lsp-booster--advice)
+;; Increase the amount of data which Emacs reads from the process#
+;;(setq gc-cons-threshold (* 100 1024 1024))
+;;(setq read-process-output-max (* 1024 1024));; 1mb
+;;(setq lsp-log-io nil) ; if set to true can cause a performance hit
+;;(setq lsp-idle-delay 0.500)
+;;lsp config
+;; lsp-mode 
+(use-package lsp-mode
+  :ensure t
+  :init
+  (setq lsp-keymap-prefix "C-c l")
+  :hook ((prog-mode . lsp-deferred)
+         (go-mode . lsp-deferred)
+         (rust-mode . lsp-deferred)
+         (lsp-mode . lsp-enable-which-key-integration))
+  :commands (lsp lsp-deferred))
+
+(use-package lsp-ui
+  :ensure t
+  :commands lsp-ui-mode
+  :hook (lsp-mode . lsp-ui-mode)
+  :custom
+  (lsp-ui-doc-position 'bottom)
+  (lsp-ui-sideline-show-diagnostics t)
+  (lsp-ui-sideline-show-hover t)
+  ;; se você usa flycheck/flymake, remova essa linha
+  (lsp-diagnostics-provider :none))
+
+(use-package typescript-mode
+  :ensure t
+  :mode "\\.ts\\'"
+  :hook (typescript-mode . lsp-deferred)
+  :config
+  (setq typescript-indent-level 2))
+
+(use-package lsp-java
+  :ensure t
+  :after lsp
+  :config
+  (add-hook 'java-mode-hook #'lsp))
+
+(use-package lsp-pyright
+  :ensure t
+  :hook (python-mode . (lambda ()
+                         (require 'lsp-pyright)
+                         (lsp-deferred))))
+(require 'dap-java)
+
+(defun my/dap-debug-java-main (main-class)
+  "Rodar uma classe Java com método main usando dap-mode."
+  (interactive "sNome da classe principal (ex: Hello): ")
+  (dap-debug
+   (list :type "java"
+         :request "launch"
+         :name (format "Java :: %s" main-class)
+         :mainClass main-class
+         :projectName nil))) ;; se tiver projeto Maven/Gradle, pode colocar o nome aqui
+
+;; dap node
+(require 'dap-node)
+(defun my/dap-debug-node (file)
+  "Rodar qualquer arquivo JS/TS com dap-mode (Node.js)."
+  (interactive "fArquivo JS/TS: ")
+  (dap-debug
+   (list :type "node"
+         :request "launch"
+         :name (format "Node :: %s" (file-name-nondirectory file))
+         :program (expand-file-name file)
+         :cwd (file-name-directory (expand-file-name file))
+         :runtimeExecutable "node")))
+
+;; dap python
+(require 'dap-python)
+
+(defun my/dap-debug-python-file (file)
+  "Rodar qualquer arquivo Python com dap-mode."
+  (interactive "fArquivo Python: ")
+  (dap-debug
+   (list :type "python"
+         :request "launch"
+         :name (format "Python :: %s" (file-name-nondirectory file))
+         :program (expand-file-name file)
+         :cwd (file-name-directory (expand-file-name file)))))
+
 ;;; company exibir sugestões textos já digitados
 (use-package company
   :ensure t
-  :config
+  :after lsp-mode
+  :hook (prog-mode . company-mode)
+  :bind (:map company-active-map
+              ("<tab>" . company-complete-selection)
+              ("TAB"   . company-complete-selection))
+  :custom
   (setq company-idle-delay 0.1
-        company-minimum-prefix-length 2
+        company-minimum-prefix-length 1
         company-selection-wrap-around t
 
         ;; NÃO converter sugestões para minúsculo
@@ -355,6 +396,8 @@
 
         ;; respeitar case original
         company-dabbrev-ignore-case nil)
+
+  
 
   (setq company-backends
         '((company-capf company-dabbrev company-files company-elisp
@@ -380,9 +423,6 @@
 (use-package which-key
   :config (which-key-mode))
 
-
-(setq major-mode-remap-alist
-      '((typescript-mode . typescript-mode)))
 
 
 (use-package web-mode

@@ -4,5 +4,5 @@ polybar main &
 sleep 1  # Aumentado para garantir que systray esteja pronto
 copyq --start-server &
 blueman-applet &
-#nm-applet &
-# volumeicon &  # Comente se usar apenas pulseaudio na polybar
+nm-applet &
+pkill dunst && dunst &

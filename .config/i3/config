@@ -9,6 +9,7 @@
 
 # Autostart (programas que iniciam com o i3)
 exec --no-startup-id gnome-keyring-daemon --start --components=pkcs11,secrets,ssh
+
 exec --no-startup-id ~/.config/polybar/launch.sh
 exec --no-startup-id nitrogen --restore
 # Mod key (Super/Win)
@@ -16,7 +17,7 @@ set $mod Mod4
 
 # Variáveis para terminal e menu (boa prática do seu sway config)
 set $term alacritty
-set $menu dmenu_recency
+set $menu i3-dmenu-desktop
 
 # Fonte
 font pango:monospace 10
@@ -38,7 +39,7 @@ bindsym $mod+Shift+q kill
 # Menu de aplicativos (mantendo dmenu_recency como pedido)
 bindsym $mod+d exec --no-startup-id $menu
 
-# Mudar foco (estilo vim, como no sway)
+# Mudar foco (estilo vim, como no swaysway)
 set $left h
 set $down j
 set $up k

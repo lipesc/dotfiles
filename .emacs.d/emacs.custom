@@ -5,10 +5,11 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(ag company eglot eglot-java exec-path-from-shell flycheck gcmh
-		ido-completing-read+ js2-mode key-chord lsp-treemacs magit
-		multiple-cursors php-mode phps-mode popup projectile
-		smart-shift smex tree-sitter tree-sitter-langs)))
+   '(company exec-path-from-shell flycheck gcmh ido-completing-read+
+			 js2-mode key-chord lsp-java lsp-pyright lsp-ui magit
+			 multiple-cursors php-mode phps-mode polymode popup
+			 projectile python-mode smart-shift smex tree-sitter-langs
+			 typescript-mode vue-html-mode yasnippet)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
