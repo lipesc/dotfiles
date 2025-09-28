@@ -1,0 +1,4 @@
+#!/bin/sh
+# Este script executa o comando git para gerenciar os dotfiles
+
+/usr/bin/git --git-dir="$HOME/.dotfiles/" --work-tree="$HOME" "$@"

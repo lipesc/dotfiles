@@ -3,7 +3,7 @@
 export QT_STYLE_OVERRIDE=Adwaita-Dark
 export LSP_USE_PLISTS=true
 export PATH="$HOME/.cargo/bin:$PATH"
-
+export PATH="$HOME/.local/bin:$PATH"
 
 # ⚡ Powerlevel10k InstantInstant Prompt# ⚡ Powerlevel10k Instant Prompt
 # ⚡ Powerlevel10k Instant PromptPromptPromptPrompt
