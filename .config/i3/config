@@ -1,3 +1,118 @@
+exec_always --no-startup-id sleep 2
+set $mod Mod4
+set $term alacritty
+set $menu i3-dmenu-desktop
+exec_always --no-startup-id feh --bg-fill /home/fsc/.config/i3-launch/wall.jpg
+exec_always --no-startup-id ~/.config/i3-launch/xidlehook.sh
+
+font pango:JetBrainsMono Nerd Font 11
+exec_always --no-startup-id sleep 2 && xrandr --output HDMI-2 --mode 1920x1080 --rate 60 --primary
+exec --no-startup-id xsetroot -solid "#000000"
+exec --no-startup-id xset s 3600 3600
+exec --no-startup-id xset dpms 3600 3600 3600
+exec --no-startup-id ~/.config/i3-launch/launch.sh
+
+bindsym $mod+Shift+w kill
+bindsym $mod+Return exec $term
+bindsym $mod+d exec --no-startup-id $menu
+bindsym $mod+space exec "nautilus"
+bindsym $mod+Shift+k exec systemctl poweroff -i
+bindsym $mod+b exec "zim"
+
+# foco
+bindsym $mod+Left focus left
+bindsym $mod+Down focus down
+bindsym $mod+Up focus up
+bindsym $mod+Right focus right
+
+# mover janelas
+bindsym $mod+Shift+Left move left
+bindsym $mod+Shift+Down move down
+bindsym $mod+Shift+Up move up
+bindsym $mod+Shift+Right move right
+
+bindsym $mod+f fullscreen toggle
+bindsym $mod+s layout stacking
+bindsym $mod+e layout toggle split
+
+bindsym $mod+Shift+space floating toggle
+bindsym $mod+a focus parent
+floating_modifier $mod
+tiling_drag swap_modifier $mod
+
+
+
+mode "resize" {
+    bindsym Left  resize shrink width 10 px or 10 ppt
+    bindsym Down  resize grow height 10 px or 10 ppt
+    bindsym Up    resize shrink height 10 px or 10 ppt
+    bindsym Right resize grow width 10 px or 10 ppt
+
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
+}
+bindsym $mod+r mode "resize"
+
+# workspaces
+bindsym $mod+1 workspace number 1
+bindsym $mod+2 workspace number 2
+bindsym $mod+3 workspace number 3
+bindsym $mod+4 workspace number 4
+bindsym $mod+5 workspace number 5
+bindsym $mod+6 workspace number 6
+bindsym $mod+7 workspace number 7
+bindsym $mod+8 workspace number 8
+bindsym $mod+9 workspace number 9
+bindsym $mod+0 workspace number 10
+
+bindsym $mod+Shift+1 move container to workspace number 1
+bindsym $mod+Shift+2 move container to workspace number 2
+bindsym $mod+Shift+3 move container to workspace number 3
+bindsym $mod+Shift+4 move container to workspace number 4
+bindsym $mod+Shift+5 move container to workspace number 5
+bindsym $mod+Shift+6 move container to workspace number 6
+bindsym $mod+Shift+7 move container to workspace number 7
+bindsym $mod+Shift+8 move container to workspace number 8
+bindsym $mod+Shift+9 move container to workspace number 9
+bindsym $mod+Shift+0 move container to workspace number 10
+bindsym $mod+Shift+r reload
+bindsym $mod+Shift+e exec "i3-msg restart"
+bindsym $mod+Shift+y exec "i3-nagbar -t warning -m 'Você quer sair do i3?' -B 'Sim, sair' 'i3-msg exit'"
+
+# Use pactl to adjust volume in PulseAudio.
+
+bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@
+bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@
+bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute @DEFAULT_SINK@ toggle
+bindsym XF86AudioMicMute exec --no-startup-id pactl set-source-mute @DEFAULT_SOURCE@ toggle
+
+# Open Pavucontrol
+bindsym $mod+u exec --no-startup-id pavucontrol
+
+
+bindsym $mod+Shift+v exec --no-startup-id copyq menu
+bindsym Print exec --no-startup-id maim -s ~/Pictures/$(date +'%Y-%m-%d_%H-%M-%S').png && xclip -selection clipboard -t image/png < ~/Pictures/$(ls -t ~/Pictures/ | head -n1)
+
+
+# ====================== BAR ======================
+bar {
+        # <<< AJUSTE >>> bar aparece só no monitor que você usa
+        output HDMI-2
+        position bottom
+        status_command i3status -c /home/fsc/.config/i3-launch/i3status.conf
+	    tray_output primary
+		tray_padding 2
+        colors {
+                background #00000
+                statusline #ffffff
+                separator #666666
+                focused_workspace  #4c7899 #285577 #ffffff
+                active_workspace   #333333 #5f676a #ffffff
+                inactive_workspace #333333 #222222 #888888
+                urgent_workspace   #2f343a #900000 #ffffff
+                binding_mode       #2f343a #900000 #ffffff
+        }
+}
 # Configuração do i3 ajustada para se assemelhar à sua config do Sway.
 #
 # Principais mudanças:
