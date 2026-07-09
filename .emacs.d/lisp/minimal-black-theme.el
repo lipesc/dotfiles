@@ -101,7 +101,8 @@
                               :underline nil
                               :foreground ,modeline-foreground
                               :background ,modeline-background
-                              :box (:line-width 1 :color ,background :style unspecified)
+                              ;; Emacs recentes rejeitam :style unspecified em :box.
+                              :box (:line-width 1 :color ,background)
                               ))))
    `(mode-line-buffer-id ((,class (:weight bold))))
    `(mode-line-inactive
@@ -110,7 +111,8 @@
                               :underline nil
                               :foreground ,modeline-foreground-inactive
                               :background ,modeline-background-inactive
-                              :box (:line-width 1 :color ,border :style unspecified)
+                              ;; Mantido sem :style para evitar "Invalid face box".
+                              :box (:line-width 1 :color ,border)
                               ))))
 
    ;; hl-line-mode
