@@ -2,6 +2,10 @@
 ;; 1. CONFIGURAÇÃO DO GERENCIADOR DE PACOTES
 ;; -------------------------------------------------------------------------
 ;; 1. Garante que o gerenciador de pacotes 'use-package' esteja instalado
+(setq custom-file "~/.emacs.d/emacs.custom")
+(load custom-file 'noerror)
+(add-to-list 'load-path "~/.emacs.d/lisp/")
+(add-to-list 'custom-theme-load-path "~/.emacs.d/lisp/")
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
 (package-initialize)
@@ -35,10 +39,7 @@
 ;; -------------------------------------------------------------------------
 ;; 2. DEFINIÇÕES GERAIS E UI
 ;; -------------------------------------------------------------------------
-(setq custom-file "~/.emacs.d/emacs.custom")
-(load custom-file 'noerror)
-(add-to-list 'load-path "~/.emacs.d/lisp/")
-(add-to-list 'custom-theme-load-path "~/.emacs.d/lisp/")
+
 
 ;; Interface Limpa
 (setq inhibit-startup-screen t
@@ -51,7 +52,7 @@
 
 ;; --- FONTE ---
 ;; O valor 120 equivale a tamanho 12pt. Ajuste se ficar pequeno/grande.
-(set-face-attribute 'default nil :family "Monospace" :height 130)
+(set-face-attribute 'default nil :family "Monospace" :height 120)
 
 ;; Tema 
 (load-theme 'minimal-black t)
@@ -62,23 +63,18 @@
 (setq select-enable-clipboard t)
 (setq make-backup-files nil)
 
-;; Histórico e sessão entre reinicializações
-(use-package savehist
-  :ensure nil
-  :init
-  (savehist-mode 1))
+;;pyenv
+(when (and (require 'pyenv-mode nil t)
+           (executable-find "pyenv"))
+  (pyenv-mode)
+  (defun projectile-pyenv-mode-set ()
+    "Set pyenv version matching project name."
+    (let ((project (projectile-project-name)))
+      (if (member project (pyenv-mode-versions))
+          (pyenv-mode-set project)
+        (pyenv-mode-unset))))
+  (add-hook 'projectile-after-switch-project-hook 'projectile-pyenv-mode-set))
 
-(use-package desktop
-  :ensure nil
-  :init
-  (desktop-save-mode 1))
-
-(use-package recentf
-  :ensure nil
-  :init
-  (recentf-mode 1)
-  :custom
-  (recentf-max-saved-items 200))
 
 ;; markdown
 (with-eval-after-load 'markdown-mode
@@ -173,11 +169,19 @@
       (message "Markdown preview precisa de um renderizador externo (ex.: pandoc)."))))
 
 (use-package multiple-cursors
-  :bind (("C->" . mc/mark-next-like-this)
-         ("C-<" . mc/mark-previous-like-this)
-         ("C-c C->" . mc/mark-all-like-this)
-         ("C-c C-<" . mc/edit-lines)
-         ("C-j" . er/expand-region)))
+:bind (("C-c n" . mc/mark-next-like-this)      ; 'n' para próximo (next)
+("C-c p" . mc/mark-previous-like-this)  ; 'p' para anterior (previous)
+("C-c a" . mc/mark-all-like-this)       ; 'a' para todos (all)
+("C-c e" . mc/edit-lines)               ; 'e' para editar linhas
+("C-j" . er/expand-region))) 
+
+(use-package expand-region) 
+
+;;(use-package key-chord
+;;:config
+;;(key-chord-mode 1)
+;; Atalho alternativo compatível com terminal e GUI:
+;; (global-set-key (kbd "C-c <") 'smart-shift-left))
 (use-package expand-region)
 
 (use-package pulse
@@ -205,9 +209,9 @@
 (use-package key-chord
   :config
   (key-chord-mode 1)
-  (key-chord-define-global "<<" 'smart-shift-left))
-
-;;modeline
+  (global-set-key (kbd "C-c <<") 'smart-shift-left)
+  (global-set-key (kbd "C-c >>") 'smart-shift-right))
+  ;;modeline
 ;; ===============================
 ;; EGLOT (LSP NATIVO)
 ;; ===============================
@@ -243,12 +247,11 @@
       (add-to-list 'exec-path dir))))
 
 ;; ===============================
-;; MODELINE MODERNA (MOOD-LINE)
-;; ===============================
+;; ===============================;; ===============================
 
 ;; -------------------------------------------------------------------------
 ;; 4. DESENVOLVIMENTO & TREESITTER
-;; -------------------------------------------------------------------------;;
+
 ;; eglot--managed-mode
 
 ;;etecta se você tem suporte e ativa os modos modernos (-ts-mode)
@@ -259,16 +262,17 @@
   (treesit-auto-add-to-auto-mode-alist 'all)
   (global-treesit-auto-mode))
 
-(use-package geiser
-  :ensure t
-  :config
+;;(use-package geiser
+;;  :ensure t
+;;  :config
   ;; Use this instead of the old geiser-scheme-implementations
-  (setq geiser-active-implementations '(mit)))
+;;  (setq geiser-active-implementations '(mit)))
 
-(use-package geiser-mit
-  :ensure t)
-
-
+;;(use-package geiser-mit
+;;  :ensure t)
+;;M-x geiser: Inicia o interpretador (REPL) do Scheme.C-c C-z: Alterna entre o arquivo de código e o REPL.C-x C-e: Avalia a expressão Scheme que está antes do cursor.C-c C-r: Avalia toda a região de código selecionada.C-c C-b: Avalia o arquivo inteiro (Buffer).
+;;
+(setq geiser-mit-binary "mit-scheme")
 (use-package company
   :hook (after-init . global-company-mode)
   :custom
